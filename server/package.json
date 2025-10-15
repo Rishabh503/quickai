@@ -19,8 +19,10 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "fs": "^0.0.1-security",
     "multer": "^2.0.2",
-    "openai": "^5.23.1"
+    "openai": "^5.23.1",
+    "pdf-parse": "^2.3.11"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
