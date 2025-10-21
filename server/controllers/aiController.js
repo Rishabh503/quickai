@@ -65,26 +65,25 @@ export const generateBlogTitle = async (req, res) => {
     const { prompt } = req.body;
     const plan = req.plan;
     const free_usage = req.free_usage;
-
+console.log("clicked blog titles")
     if (plan !== "premium" && free_usage >= 10) {
       return res.json({
         success: false,
         message: "limit has reached , upgrade  for more",
       });
     }
-    const response = await AI.chat.completions.create({
-      model: "gemini-2.5-flash",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 100,
+
+    console.log(prompt)
+
+     const response = await AI.models.generateContent({
+      model: "gemini-2.0-flash",
+     contents:prompt,
+     config:{
+      systemInstruction:"You are an individual who is great writer at writing the titles for an blog based on the prompt and the keyword it has , return the user good 5 blog titles based on his prompt , make it attractive acording to the new genration trends of the social media, aesthtic lifestyle  "
+     }
     });
 
-    const content = response.choices[0].message.content;
+    const content = response.text
     console.log(content);
     await sql`INSERT INTO creations(user_id,prompt,content,type)
     values (${userId},${prompt},${content},'blog-title')`;
@@ -107,13 +106,14 @@ export const generateImage = async (req, res) => {
     const { userId } = req.auth();
     const { prompt, publish } = req.body;
     const plan = req.plan;
-
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "Subscribe to use this feature",
-      });
-    }
+      const free_usage = req.free_usage;
+    console.log("clicked the generate image ")
+    // if (plan !== "premium") {
+    //   return res.json({
+    //     success: false,
+    //     message: "Subscribe to use this feature",
+    //   });
+    // }
 
     const formData = new FormData();
     formData.append("prompt", prompt);
@@ -130,7 +130,7 @@ export const generateImage = async (req, res) => {
 
     await sql`INSERT INTO creations(user_id,prompt,content,type,publish)
     values (${userId},${prompt},${secure_url},'image',${publish?? false})`;
-    if (plan !== "premium") {
+ if (plan !== "premium") {
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: {
           free_usage: free_usage + 1,
