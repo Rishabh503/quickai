@@ -4,39 +4,44 @@ import { sql } from "../configs/db.js";
 import axios from "axios";
 import {v2 as cloudinary} from 'cloudinary'
 import fs from "fs"
-import pdf from "pdf-parse/lib/pdf-parse.js"
+import { GoogleGenAI } from "@google/genai";
+// import pdf from "pdf-parse/lib/pdf-parse.js"
+import * as pdfParse from "pdf-parse";
 
-import { AlwaysCompare } from "three/src/constants.js";
-const AI = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-});
+
+// import { AlwaysCompare } from "three/src/constants.js";
+// const AI = new OpenAI({
+//   apiKey: process.env.GEMINI_API_KEY,
+//   baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+// });
+
+const AI=new GoogleGenAI({})
 export const generateArticle = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { prompt, length } = req.body;
     const plan = req.plan;
     const free_usage = req.free_usage;
-
+    console.log("called")
     if (plan !== "premium" && free_usage >= 10) {
       return res.json({
         success: false,
         message: "limit has reached , upgrade  for more",
       });
     }
-    const response = await AI.chat.completions.create({
-      model: "gemini-2.5-flash",
-      messages: [
-        { 
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: length,
+    console.log("Body received:", req.body);
+
+    console.log(prompt)
+    
+    const response = await AI.models.generateContent({
+      model: "gemini-2.0-flash",
+     contents:prompt,
+     config:{
+      systemInstruction:"You are a Article writer and you write good articles for all the users you dont please them but instead play on the facts give the proper and very good information on the topic , if you think you cant answer it you throw an error directly"
+     }
     });
 
-    const content = response.choices[0].message.content;
+    const content = response.text
     console.log(content);
     await sql`INSERT INTO creations(user_id,prompt,content,type)
     values (${userId},${prompt},${content},'article')`;

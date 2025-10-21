@@ -1,7 +1,13 @@
 import { Edit, Sparkles } from "lucide-react";
 import React, { useState } from "react";
+import axios from "axios"
+import { useAuth } from "@clerk/clerk-react";
+import toast from "react-hot-toast";
+axios.defaults.baseUrl = import.meta.env.VITE_BASE_URL;
+
 
 const WriteArticle = () => {
+  console.log(import.meta.env.VITE_BASE_URL)
   const articleLength = [
     { length: 800, text: "Short (500-800 words)" },
     { length: 1200, text: "Short (800-1200 words)" },
@@ -9,9 +15,34 @@ const WriteArticle = () => {
   ];
   const [selectedLength, setSelectedLength] = useState(articleLength[0]);
   const [input, setInput] = useState("");
+  const [content,setContent]=useState("");
+  const [loading, setLoading] = useState(false)
+
+  const {getToken}=useAuth()
+
   const handleSubmit=async(e)=>{
     e.preventDefault();
+    try {
+      setLoading(true)
+      const prompt=`write an article about ${input} in ${selectedLength.text}`
+      const {data}=await axios.post('/api/ai/generate-article',{
+        prompt,
+        length:selectedLength.text
+      },
+      {
+        headers:{Authorization:`Bearer ${await getToken()}`}
+      })
+
+      if(data.success){
+        setContent(data.content)
+      }
+    } catch (error) {
+      console.log("error",error)
+      toast.error(error.message)
+    }
+    setLoading(false);
   }
+  console.log(content)
   return (
     <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
       {/* left col */}
@@ -65,13 +96,19 @@ text-sm rounded-lg cursor-pointer"
         <Edit className='w-5 h-5 text-[#4A7AFF]' />
         <h1 className='text-xl font-semibold'>Generated article</h1>
     </div>
-
-    <div className='flex-1 flex justify-center items-center'>
+    {!content ? (
+          <div className='flex-1 flex justify-center items-center'>
         <div className='text-sm flex flex-col items-center gap-5 text-gray-400'>
             <Edit className='w-9 h-9' />
             <p>Enter a topic and click "Generate article" to get started</p>
         </div>
     </div>
+    ):(
+      <div className="mt-3 h-full overflow-y-scroll text-sm text-slate-600">
+        {content}
+      </div>
+    )}
+
     </div>
     </div>
   );

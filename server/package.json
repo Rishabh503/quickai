@@ -13,6 +13,8 @@
   "description": "",
   "dependencies": {
     "@clerk/express": "^1.7.33",
+    "@google/genai": "^1.25.0",
+    "@google/generative-ai": "^0.24.1",
     "@neondatabase/serverless": "^1.0.1",
     "axios": "^1.12.2",
     "cloudinary": "^2.7.0",
@@ -20,6 +22,7 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "fs": "^0.0.1-security",
+    "google": "^2.1.0",
     "multer": "^2.0.2",
     "openai": "^5.23.1",
     "pdf-parse": "^2.3.11"
