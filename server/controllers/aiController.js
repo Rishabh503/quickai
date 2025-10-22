@@ -6,7 +6,10 @@ import {v2 as cloudinary} from 'cloudinary'
 import fs from "fs"
 import { GoogleGenAI } from "@google/genai";
 // import pdf from "pdf-parse/lib/pdf-parse.js"
-import * as pdfParse from "pdf-parse";
+// import * as pdfParse from "pdf-parse";
+// import * as pdf from "pdf-parse";
+import { PDFParse } from 'pdf-parse';
+// import pdf from "pdf-parse";
 
 
 // import { AlwaysCompare } from "three/src/constants.js";
@@ -205,7 +208,7 @@ console.log("clicked on the remove image obj")
       }],
       resource_type:'image'
     })
-    console.log(secure_url)
+    console.log(imageUrl)
 
 
     await sql`INSERT INTO creations(user_id,prompt,content,type)
@@ -222,45 +225,82 @@ export const resumeReview = async (req, res) => {
   try {
     const { userId } = req.auth();
     // const { object } = req.body;
-    const resume=req.file;
+    const resume = req.file;
     const plan = req.plan;
 
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "Subscribe to use this feature",
-      });
+    if (!resume) {
+      return res.json({ success: false, message: "Resume file is required" });
     }
-    //5mb se bada
-    if(resume.size>5*1024*1024){
-      return res.json({success:false,message:"resume file size exceeds allowed size(5mb"})
-    }
-    const dataBuffer=fs.readFileSync(resume.path)
-    const pdfData=await pdf(dataBuffer)
 
-    const prompt=`Review the following resume and provide constructive feedback on is strenght, weakness,and areas of improvement. Resume Content :\n\n${pdfData.text} `
-    
-        const response = await AI.chat.completions.create({
-      model: "gemini-2.5-flash",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 1000,
+    if (plan !== "premium") {
+      throw new Error("subscribe to use this premium feature");
+    }
+
+    // 5mb se bada
+    if (resume.size > 5 * 1024 * 1024) {
+      return res.json({ success: false, message: "resume file size exceeds allowed size (5mb)" });
+    }
+
+   console.log(resume)
+    const parser=new PDFParse({url:resume.path})
+    const pdfText = await parser.getText();
+	console.log(pdfText.text);
+    const prompt = `Review the following resume and provide constructive feedback on its strength, weakness, and areas of improvement. Resume Content:\n\n${pdfText.text}`;
+
+    const response = await AI.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: prompt, // for string input
+      config: {
+        systemInstruction: `You are a professional resume reviewer and career advisor. Review the resume carefully and provide constructive feedback to improve its impact. Focus on:
+
+Formatting and Structure – Is it clean, readable, and well-organized?
+
+Clarity and Conciseness – Are points clear, concise, and free of jargon?
+
+Content Relevance – Are the experiences, skills, and projects relevant to the target roles?
+
+Achievements vs Responsibilities – Are achievements highlighted instead of just listing responsibilities?
+
+Language and Grammar – Check for spelling, grammar, and professional tone.
+
+ATS Friendliness – Is it optimized for Applicant Tracking Systems?
+
+Impactful Summary & Keywords – Does the resume have a strong summary and use relevant keywords?
+
+Provide:
+
+Specific actionable suggestions for improvement.
+
+Highlight strengths as well as areas that need changes.
+
+Optional: Suggest a few impactful ways to reword bullet points for clarity and effect.`
+      }
     });
 
-    const content=response.choices[0].message.content
+    // replaced gemini-google sdk with gemini
+    //     const response = await AI.chat.completions.create({
+    //   model: "gemini-2.5-flash",
+    //   messages: [
+    //     {
+    //       role: "user",
+    //       content: prompt,
+    //     },
+    //   ],
+    //   temperature: 0.7,
+    //   max_tokens: 1000,
+    // });
+
+    const content = response.text;
+
+    console.log(content)
 
     await sql`INSERT INTO creations(user_id,prompt,content,type)
-    values (${userId},"review the uploaded resume",${content},'review-resumem')`;
-   
+      values (${userId}, 'review the uploaded resume', ${content}, 'review-resume')`;
 
-    res.json({ success: true, content:content });
+    res.json({ success: true, content: content });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
 };
+
