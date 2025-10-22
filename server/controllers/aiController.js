@@ -146,18 +146,17 @@ export const generateImage = async (req, res) => {
 };
 export const removeImageBackground = async (req, res) => {
   try {
+    console.log("clicked the remove image bkg")
     const { userId } = req.auth();
     // const { prompt, publish } = req.body;
-    const {image}=req.file;
+    const image=req.file;
     const plan = req.plan;
-
+    console.log(plan)
+    console.log("clicked the remove image bkg2")
     if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "Subscribe to use this feature",
-      });
+      throw new Error("Subscribe to use premimum features")
     }
-
+    console.log("Reacehd cloudinary")
     const {secure_url}=await cloudinary.uploader.upload(image.path,{
         transformation:[
           {
@@ -169,9 +168,15 @@ export const removeImageBackground = async (req, res) => {
     
     console.log(secure_url)
 
+    const prompt="remove the bg"
+//     const columns = await sql`SELECT column_name FROM information_schema.columns WHERE table_name = 'creations'`;
+// console.log(columns);
 
-    await sql`INSERT INTO creations(user_id,prompt,content,type)
-    values (${userId},"remove the background",${secure_url},'image')`;
+    await sql`
+  INSERT INTO "creations" ("user_id", "prompt", "content", "type")
+  VALUES (${userId}, 'remove the background', ${secure_url}, 'image')
+`;
+
    
 
     res.json({ success: true, content:secure_url });
@@ -185,17 +190,14 @@ export const removeImageObject = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { object } = req.body;
-    const {image}=req.file;
+    const {path}=req.file;
     const plan = req.plan;
-
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "Subscribe to use this feature",
-      });
+console.log("clicked on the remove image obj")
+     if (plan !== "premium") {
+      throw new Error("Subscribe to use premimum features")
     }
 
-    const {public_id}=await cloudinary.uploader.upload(image.path)
+    const {public_id}=await cloudinary.uploader.upload(path)
     
     const imageUrl=cloudinary.url(public_id,{
       transformation:[{
@@ -203,7 +205,7 @@ export const removeImageObject = async (req, res) => {
       }],
       resource_type:'image'
     })
-    // console.log(secure_url)
+    console.log(secure_url)
 
 
     await sql`INSERT INTO creations(user_id,prompt,content,type)
