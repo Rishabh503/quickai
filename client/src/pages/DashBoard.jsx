@@ -3,11 +3,33 @@ import { dummyCreationData } from "../assets/assets";
 import { Gem, Sparkles } from "lucide-react";
 import { Protect } from "@clerk/clerk-react";
 import CreationItem from "../components/CreationItem";
-
+import axios from "axios"
+import { useAuth } from "@clerk/clerk-react";
+import toast from "react-hot-toast";
+axios.defaults.baseUrl = import.meta.env.VITE_BASE_URL;
 const DashBoard = () => {
   const [creations, setCreations] = useState([]);
+  const [loading,setLoading]=useState(false)
+  const {getToken}=useAuth()
   const getDashboardData = async () => {
-    setCreations(dummyCreationData);
+    try {
+      setLoading(true)
+      const {data}=await axios.get('/api/user/get-user-creations',
+        {
+        headers:{Authorization:`Bearer ${await getToken()}`}
+      }
+      )
+
+    if(data.success){
+        console.log('did data come ?',data.creations)
+      setCreations(data.creations);
+      setLoading(false)
+    }
+    
+    } catch (error) {
+      console.log(error,"this is the error")
+      toast.error(error.message)
+    }
   };
 
   useEffect(() => {
@@ -45,8 +67,14 @@ const DashBoard = () => {
 
       <div className="space-y-3">
         <p className="mt-6 mb-4 ">Recent Creations</p>
-        {
+        {!loading?
           creations.map((item)=><CreationItem key={item.id} item = {item}/>)
+        :<div>
+          <p>
+            loading data...
+          </p>
+          </div>
+        
         }
       </div>
     </div>
