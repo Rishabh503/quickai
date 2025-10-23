@@ -19,30 +19,36 @@ export const getPublishedCreations = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-export const toogleLikeCreation = async (req, res) => {
+export const toggleLikeCreation = async (req, res) => {
   try {
-    const { userId } = req.auth();
-    const {id}=req.body
+    const { userId } = req.auth;
+    const { id } = req.body;
 
-    const [creation ]= await sql`SELECT * FROM creations WHERE id=${id}`;
-    if(!creation){
-        return res.json({success:false,message:"creation not found"})
+    const [creation] = await sql`SELECT * FROM creations WHERE id = ${id}`;
+    if (!creation) {
+      return res.json({ success: false, message: "Creation not found" });
     }
-    const currentLikes=creation.likes;  
-     const userIdstr=userId.toString()
-     let updatedLikes;
-     let message;
-    if(currentLikes.includes(userIdstr)){
-        updatedLikes=currentLikes.filter((user)=>user!==userIdStr);
-        message="creation unliked"
-    }else{
-        updatedLikes=[...currentLikes,userIdstr]
-        message='creation failed'
+
+    const currentLikes = creation.likes || [];
+    const userIdStr = userId.toString();
+
+    let updatedLikes;
+    let message;
+
+    if (currentLikes.includes(userIdStr)) {
+      updatedLikes = currentLikes.filter((u) => u !== userIdStr);
+      message = "Creation unliked";
+    } else {
+      updatedLikes = [...currentLikes, userIdStr];
+      message = "Creation liked";
     }
-    const formattedArray=`{${updatedLikes.json(',')}}`
-    await sql`UPDATE creations SET likes=${formattedArray}::text[] WHERE id=${id}`
-    return res.json({ success: true, message });
+
+    const formattedArray = `{${updatedLikes.join(",")}}`;
+    await sql`UPDATE creations SET likes = ${formattedArray}::text[] WHERE id = ${id}`;
+
+    return res.json({ success: true, message, likes: updatedLikes });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
+
