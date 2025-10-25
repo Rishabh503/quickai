@@ -121,9 +121,9 @@ const WriteArticle = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-3 text-sm  leading-relaxed whitespace-pre-line">
+          <div className="mt-3 text-sm text-white   leading-relaxed whitespace-pre-line">
            <Markdown>
-            {content}
+            {String(content)}
            </Markdown>
           </div>
         )}

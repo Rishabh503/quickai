@@ -3,6 +3,7 @@ import axios from "axios";
 import { Edit, Hash, Sparkles } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import Markdown from "react-markdown";
 axios.defaults.baseUrl = import.meta.env.VITE_BASE_URL;
 const BlogTitles = () => {
   const blogCategories = [
@@ -47,17 +48,17 @@ const BlogTitles = () => {
   };
   console.log(content);
   return (
-    <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
+    <div className="h-full overflow-y-scroll p-6  items-start  gap-4 text-slate-700">
       {/* left col */}
       <form
-        className="w-full max-w-lg p-4 bg-white rounded-lg border border-gray-200"
+        className="w-full  p-4 text-white rounded-lg "
         onSubmit={handleSubmit}
       >
         <div className="flex items-center gap-3">
-          <Sparkles className="w-6 text-[#8E37EB]" />
-          <h1 className="text-xl font-semibold">AI Title Genrator</h1>
+          {/* <Sparkles className="w-6 text-[#8E37EB]" /> */}
+          <h1 className="text-3xl font-semibold">Blog Title Generator</h1>
         </div>
-        <p className="mt-6 text-sm font-medium">Keyword</p>
+        <p className="mt-6 text-sm text-[#BA9E9E] font-medium">Keyword</p>
         <input
           onChange={(e) => setInput(e.target.value)}
           value={input}
@@ -66,15 +67,15 @@ const BlogTitles = () => {
           placeholder="The future of artificial intelligence is..."
           required
         />
-        <p className="mt-4 text-sm font-medium">Category</p>
+        <p className="mt-4 text-sm text-[#BA9E9E] font-medium">Category</p>
         <div className="mt-3 flex gap-3 flex-wrap sm:max-w-9/11">
           {blogCategories.map((item) => (
             <span
               onClick={() => setSelectedCategory(item)}
-              className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
+              className={`text-md px-4 py-1 border rounded-md  cursor-pointer ${
                 selectedCategory === item
-                  ? "bg-purple-50 text-blue-700 "
-                  : "bg-gray-50"
+                  ? "bg-[#BA9E9E] text-white"
+                  : ""
               }`}
             >
               {item}
@@ -82,36 +83,35 @@ const BlogTitles = () => {
           ))}
         </div>
         <br />
-        <button disabled={loading}
-          className="w-full flex justify-center items-center gap-2
- bg-gradient-to-r from-[#C341F6] to-[#8E37EB] text-white px-4 py-2 mt-6
- text-sm rounded-lg cursor-pointer"
-        >
-          {  !loading?<Hash className="w-5" />:(<p>
-            
-          </p>
-          )}
-          
-        {!loading ?" Generate Blog Title ":"Generating "}
-        </button>
+        <div className="flex justify-end">
+               <button
+                 disabled={loading}
+                 className="flex items-center gap-2 bg-[#ED1212] text-white px-5 py-2 mt-6 text-sm rounded-lg cursor-pointer hover:bg-[#c70f0f] transition"
+               >
+                 {!loading ? <Edit className="w-5" /> : <p>...</p>}
+                 {!loading ? "Generate Article" : "Generating..."}
+               </button>
+             </div>
       </form>
       {/* roght col  */}
-      <div className="w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border border-gray-200 min-h-96 max-h-[600px]">
+      <div className="w-full p-4 text-white rounded-lg flex flex-col ">
         <div className="flex items-center gap-3">
-          <Hash className="w-5 h-5 text-[#4A7AFF]" />
-          <h1 className="text-xl font-semibold">Generated Titles</h1>
+          {/* <Hash className="w-5 h-5 text-[#4A7AFF]" /> */}
+          <h1 className="text-3xl font-semibold">Generated Titles</h1>
         </div>
 
         {!content ? (
           <div className="flex-1 flex justify-center items-center">
-            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+            <div className="text-sm flex flex-col items-center gap-5 text-[#BA9E9E]">
               <Hash className="w-9 h-9" />
               <p>Enter a topic and click "Generate title" to get started</p>
             </div>
           </div>
         ) : (
           <div className="mt-3 h-full overflow-y-scroll text-sm text-slate-600">
+          <Markdown>
             {content}
+            </Markdown>  
           </div>
         )}
       </div>
