@@ -32,7 +32,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
 
   return (
     <div
-      className={`w-60 bg-white border-r border-gray-200 flex 
+      className={`w-60 bg-[#171212] text-white  border-r border-neutral-800 flex 
         flex-col justify-between items-center max-sm:absolute top-14 
         bottom-0 ${
           sidebar ? "translate-x-0" : "max-sm:-translate-x-full"
@@ -40,12 +40,8 @@ const Sidebar = ({ sidebar, setSidebar }) => {
         ease-in-out`}
     >
       <div className="my-7 w-full">
-        <img
-          src={user?.imageUrl}
-          alt="user avtar"
-          className="w-13 rounded-full mx-auto "
-        />
-        <h1 className="mt-2 items-center flex text-center">{user?.fullName}</h1>
+        
+        <h1 className="mt-2 ml-2 mb-2 text-xl items-center flex text-center">Tools</h1>
         <div>
           {navItems.map(({ to, label, Icon }) => (
             <NavLink
@@ -56,7 +52,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
               className={({ isActive }) =>
                 `px-3.5 py-2.5 flex items-center gap-3 rounded ${
                   isActive
-                    ? "bg-gradient-to-r from-red-200 to-red-400 text-white"
+                    ? "bg-[#BA9E9E] text-white"
                     : ""
                 }`
               }
