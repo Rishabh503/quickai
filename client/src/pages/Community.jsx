@@ -1,110 +1,260 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { dummyPublishedCreationData } from '../assets/assets';
-import { Heart } from 'lucide-react';
-
-import axios from "axios"
+import { Heart, Search, Loader2 } from 'lucide-react';
+import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
-axios.defaults.baseUrl = import.meta.env.VITE_BASE_URL;
-// get-publish-creations
+
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const Community = () => {
   const [creations, setCreations] = useState([]);
+  const [filteredCreations, setFilteredCreations] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
   const { user } = useUser();
-    const [loading,setLoading]=useState(false)
-    const {getToken}=useAuth()
-  const fetchCreations = async()=>{
-    try {
-      setLoading(true)
-      const {data}=await axios.get('/api/user/get-publish-creations',
-        {
-        headers:{Authorization:`Bearer ${await getToken()}`}
-      }
-      )
+  const [loading, setLoading] = useState(false);
+  const { getToken } = useAuth();
 
-    if(data.success){
-        console.log('did data come ?',data.creations)
-      setCreations(data.creations);
-      setLoading(false)
-    }
-    
+  const filters = ['All', 'Images', 'Text', 'Audio', 'Video'];
+
+  const fetchCreations = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get('/api/user/get-publish-creations', {
+        headers: { Authorization: `Bearer ${await getToken()}` }
+      });
+
+      if (data.success) {
+        console.log('did data come ?', data.creations);
+        setCreations(data.creations);
+        setFilteredCreations(data.creations);
+      }
     } catch (error) {
-      console.log(error,"this is the error")
-      toast.error(error.message)
+      console.log(error, "this is the error");
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-  
-  }
+  };
 
   const toggleLike = async (id) => {
-  try {
-    const { data } = await axios.post(
-      "/api/user/toggle-like-creations",
-      { id },
-      {
-        headers: {
-          Authorization: `Bearer ${await getToken()}`
+    try {
+      const { data } = await axios.post(
+        "/api/user/toggle-like-creations",
+        { id },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`
+          }
         }
-      }
-    );
-
-    if (data.success) {
-      toast.success(data.message);
-      // update likes locally
-      setCreations((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, likes: data.likes } : item
-        )
       );
-    } else {
-      toast.error(data.message);
-    }
-  } catch (error) {
-    toast.error("Failed to like/unlike");
-    console.error(error);
-  }
-};
 
-
-  useEffect(()=>{
-    if(user){
-      fetchCreations()
+      if (data.success) {
+        toast.success(data.message);
+        // Update likes locally
+        setCreations((prev) =>
+          prev.map((item) =>
+            item._id === id || item.id === id ? { ...item, likes: data.likes } : item
+          )
+        );
+        setFilteredCreations((prev) =>
+          prev.map((item) =>
+            item._id === id || item.id === id ? { ...item, likes: data.likes } : item
+          )
+        );
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to like/unlike");
+      console.error(error);
     }
-  },[user])
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    filterCreations(query, activeFilter);
+  };
+
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
+    filterCreations(searchQuery, filter);
+  };
+
+  const filterCreations = (query, filter) => {
+    let filtered = creations;
+
+    // Filter by type
+    if (filter !== 'All') {
+      filtered = filtered.filter(item => {
+        const type = item.type?.toLowerCase() || '';
+        return type.includes(filter.toLowerCase().slice(0, -1)); // Remove 's' from filter
+      });
+    }
+
+    // Filter by search query
+    if (query) {
+      filtered = filtered.filter(item =>
+        item.prompt?.toLowerCase().includes(query.toLowerCase()) ||
+        item.title?.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+
+    setFilteredCreations(filtered);
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchCreations();
+    }
+  }, [user]);
 
   return (
-    <div className="flex-1 h-full flex flex-col gap-4 p-6">
-      <h2 className="text-xl font-semibold">Welcome, {user?.firstName}</h2>
-     <div className='bg-white h-full w-full rounded-xl overflow-y-scroll'>
-  {creations.map((creation, index) => (
-    <div
-      key={index}
-      className='relative group inline-block pl-3 pt-3 w-full sm:max-w-1/2 lg:max-w-1/3'
-    >
-      <img
-        src={creation.content}
-        alt=""
-        className='w-full h-full object-cover rounded-lg'
-      />
+    <div className="h-full overflow-y-auto  text-white p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Public Creations Gallery</h1>
+          <p className="text-gray-400">
+            Explore a diverse collection of AI-generated content shared by our community. 
+            Discover innovative creations and gain inspiration for your own projects.
+          </p>
+        </div>
 
-     <div className="absolute bottom-0 top-0 right-0 left-3 flex gap-2 items-end justify-end group-hover:justify-between p-3 group-hover:bg-gradient-to-b from-transparent to-black/80 text-white">
-  <p className="text-sm hidden group-hover:block">{creation.prompt}</p>
-  <div className="flex gap-1 items-center">
-    <p>{creation.likes.length}</p>
-    <Heart
-  onClick={() => toggleLike(creation.id)}
-  className={`min-w-5 h-5 hover:scale-110 cursor-pointer ${
-    creation.likes.includes(user.id)
-      ? "fill-red-500 text-red-600"
-      : "text-white"
-  }`}
-/>
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search creations"
+              className="w-full bg-[#2a2424] text-white placeholder-gray-500 pl-12 pr-4 py-3 rounded-lg outline-none border border-[#3a3434] focus:border-[#4a4444] transition"
+            />
+          </div>
+        </div>
 
-  </div>
-</div>
-    </div>
-  ))}
-</div>
+        {/* Filters */}
+        <div className="flex gap-3 mb-8 flex-wrap">
+          {filters.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => handleFilterChange(filter)}
+              className={`px-6 py-2 rounded-full transition ${
+                activeFilter === filter
+                  ? 'bg-white text-black'
+                  : 'bg-[#2a2424] text-gray-400 hover:bg-[#3a3434]'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-12 h-12 animate-spin text-gray-400" />
+          </div>
+        ) : filteredCreations.length > 0 ? (
+          /* Gallery Grid */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredCreations.map((creation, index) => (
+              <div
+                key={creation._id || creation.id || index}
+                className="group relative bg-[#1a1a1a] rounded-lg overflow-hidden border border-[#2a2a2a] hover:border-[#3a3a3a] transition cursor-pointer"
+              >
+                {/* Image */}
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={creation.content}
+                    alt={creation.title || creation.prompt}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
+                </div>
+
+                {/* Overlay on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                  <p className="text-white text-sm mb-2 line-clamp-2">
+                    {creation.prompt || creation.title || 'AI Generated Content'}
+                  </p>
+                  {creation.author && (
+                    <p className="text-gray-400 text-xs mb-3">
+                      By {creation.author}
+                    </p>
+                  )}
+                </div>
+
+                {/* Info Bar */}
+                <div className="p-4 flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm truncate mb-1">
+                      {creation.title || 'AI Creation'}
+                    </h3>
+                    {creation.author && (
+                      <p className="text-gray-400 text-xs truncate">
+                        By {creation.author}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Like Button */}
+                  <div className="flex items-center gap-2 ml-3">
+                    <span className="text-sm text-gray-400">
+                      {creation.likes?.length || 0}
+                    </span>
+                    <Heart
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleLike(creation._id || creation.id);
+                      }}
+                      className={`w-5 h-5 cursor-pointer transition-all hover:scale-110 ${
+                        creation.likes?.includes(user?.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-400 hover:text-red-400"
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+            <Search className="w-16 h-16 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No creations found</h3>
+            <p className="text-sm">
+              {searchQuery || activeFilter !== 'All' 
+                ? 'Try adjusting your search or filter' 
+                : 'Be the first to share your creation!'}
+            </p>
+          </div>
+        )}
+
+        {/* Pagination (optional - add if needed) */}
+        {filteredCreations.length > 0 && (
+          <div className="flex items-center justify-center gap-2 mt-12">
+            <button className="w-10 h-10 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 transition">
+              1
+            </button>
+            <button className="w-10 h-10 rounded-lg bg-[#2a2424] text-gray-400 hover:bg-[#3a3434] transition">
+              2
+            </button>
+            <button className="w-10 h-10 rounded-lg bg-[#2a2424] text-gray-400 hover:bg-[#3a3434] transition">
+              3
+            </button>
+            <button className="w-10 h-10 rounded-lg bg-[#2a2424] text-gray-400 hover:bg-[#3a3434] transition">
+              4
+            </button>
+            <button className="w-10 h-10 rounded-lg bg-[#2a2424] text-gray-400 hover:bg-[#3a3434] transition">
+              5
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

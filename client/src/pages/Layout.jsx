@@ -1,46 +1,32 @@
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
-import { Menu, X } from "lucide-react";
 import SideBar from "../components/SideBar";
-import { useUser ,SignIn} from "@clerk/clerk-react";
+import { useUser, SignIn } from "@clerk/clerk-react";
 import Navbar from "../components/NavBar";
 
 const Layout = () => {
   const navigate = useNavigate();
   const [sidebar, setSidebar] = useState(false);
-  const {user}=useUser()
-  return user? (
-    <div className="flex bg-[#171212] text-white flex-col items-start justify-start h-screen">
-      {/* <nav>
-        <img src={assets.logo} alt="" onClick={() => navigate("/")} />
-        {sidebar ? (
-          <X
-            onClick={() => setSidebar(false)}
-            className="w-6 h-6 text-gray-600 sm:hidden"
-          />
-        ) : (
-          <Menu
-            onClick={() => setSidebar(true)}
-            className="w-6 h-6 text-gray-600 sm:hidden"
-          />
-        )}
-      </nav> */}
-     <div className="">
-       <Navbar/>
-     </div>
-      <div className="flex-1 w-full flex h-[calc(100vh-64px)]">
+  const { user } = useUser();
+  
+  return user ? (
+    <div className="flex flex-col items-start justify-start h-screen bg-[#171212]">
+      <div className="w-full fixed top-0 z-50">
+        <Navbar setSidebar={setSidebar} sidebar={sidebar} />
+      </div>
+      
+      <div className="flex-1 w-full flex h-screen pt-14">
         <SideBar sidebar={sidebar} setSidebar={setSidebar} />
-        <div className="flex-1 mt-14 bg-[#]">
+        <div className="flex-1 overflow-auto bg-[#171212]">
           <Outlet />
         </div>
       </div>
     </div>
-  ):(
-    <div className="flex items-center justify-center h-screen">
-      <SignIn/>
+  ) : (
+    <div className="flex items-center justify-center h-screen bg-[#0a0a0a]">
+      <SignIn />
     </div>
-  )
+  );
 };
 
 export default Layout;

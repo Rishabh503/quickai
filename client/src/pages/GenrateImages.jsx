@@ -7,10 +7,10 @@ import { useAuth } from "@clerk/clerk-react";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const GenerateImages = () => {
-  const Styles = ["Realistic", "Ghibli Style"];
+  const Styles = ["Realistic", "Cartoon", "Abstract", "Oil Painting", "Watercolor"];
   const [selectedStyle, setSelectedStyle] = useState("Realistic");
   const [input, setInput] = useState("");
-  const [publish, setPublish] = useState(false);
+  const [publish, setPublish] = useState(true);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,116 +47,125 @@ const GenerateImages = () => {
   };
 
   return (
-    <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
-      {/* Left column */}
-      <form
-        className="w-full max-w-lg p-4 bg-white rounded-lg border border-gray-200"
-        onSubmit={handleSubmit}
-      >
-        <div className="flex items-center gap-3">
-          <Sparkles className="w-6 text-[#00AD25]" />
-          <h1 className="text-xl font-semibold">AI Image Generator</h1>
-        </div>
+    <div className="min-h-screen  text-white p-8">
+      <div className=" mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Image Generation</h1>
 
-        <p className="mt-6 text-sm font-medium">Describe Your Image</p>
-        <textarea
-          onChange={(e) => setInput(e.target.value)}
-          value={input}
-          className="w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300"
-          placeholder="The future of artificial intelligence is..."
-          required
-          rows={8}
-        />
-
-        <p className="mt-4 text-sm font-medium">Style</p>
-        <div className="mt-3 flex gap-3 flex-wrap">
-          {Styles.map((item) => (
-            <span
-              key={item}
-              onClick={() => setSelectedStyle(item)}
-              className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
-                selectedStyle === item
-                  ? "bg-green-50 text-green-700 border-green-400"
-                  : "bg-gray-50 border-gray-300"
-              }`}
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-
-        <div className="my-6 flex items-center gap-2">
-          <label className="relative cursor-pointer">
-            <input
-              type="checkbox"
-              onChange={(e) => setPublish(e.target.checked)}
-              checked={publish}
-              className="sr-only peer"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Textarea */}
+          <div>
+            <textarea
+              onChange={(e) => setInput(e.target.value)}
+              value={input}
+              className="w-full bg-[#2a2424] text-gray-300 placeholder-gray-500 rounded-lg p-4 outline-none border border-[#3a3434] focus:border-[#4a4444] transition"
+              placeholder="Describe the image you want to generate"
+              required
+              rows={2}
             />
-            <div
-              className="w-9 h-5 bg-slate-300 rounded-full
-        peer-checked:bg-green-500 transition"
-            ></div>
-            <span
-              className="absolute left-1 top-1 w-3 h-3 bg-white
-        rounded-full transition peer-checked:translate-x-4"
-            ></span>
-          </label>
-          <p>Make this image Public</p>
-        </div>
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full flex justify-center items-center gap-2
-  bg-gradient-to-r from-[#aac9a6] to-[#00AD25] text-white px-4 py-2 mt-6
-  text-sm rounded-lg cursor-pointer disabled:opacity-60"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            <>
-              <Image className="w-5" />
-              Generate Image
-            </>
-          )}
-        </button>
-      </form>
-
-      {/* Right column */}
-      <div className="w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border border-gray-200 min-h-96 max-h-[600px]">
-        <div className="flex items-center gap-3 mb-3">
-          <Image className="w-5 h-5 text-[#00AD25]" />
-          <h1 className="text-xl font-semibold">Generated Image</h1>
-        </div>
-
-        <div className="flex-1 flex justify-center items-center">
-          {!content ? (
-            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
-              <Image className="w-9 h-9" />
-              <p>Describe an image and click “Generate Image” to get started</p>
+          {/* Style Section */}
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Style</h2>
+            <div className="flex flex-wrap gap-3">
+              {Styles.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setSelectedStyle(item)}
+                  className={`px-6 py-2 rounded-full border transition ${
+                    selectedStyle === item
+                      ? "bg-white text-black border-white"
+                      : "bg-transparent text-gray-400 border-gray-600 hover:border-gray-400"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3">
+          </div>
+
+          {/* Visibility Section */}
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Visibility</h2>
+            <div className="flex justify-between gap-3">
+             <div className="flex gap-4">
+               <button
+                type="button"
+                onClick={() => setPublish(true)}
+                className={`px-6 py-2 rounded-full border transition ${
+                  publish
+                    ? "bg-white text-black border-white"
+                    : "bg-transparent text-gray-400 border-gray-600 hover:border-gray-400"
+                }`}
+              >
+                Public
+              </button>
+              <button
+                type="button"
+                onClick={() => setPublish(false)}
+                className={`px-6 py-2 rounded-full border transition ${
+                  !publish
+                    ? "bg-white text-black border-white"
+                    : "bg-transparent text-gray-400 border-gray-600 hover:border-gray-400"
+                }`}
+              >
+                Private
+              </button>
+             </div>
+               <div>
+                <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#ff3333] hover:bg-[#ff4444] text-white px-8 py-3 rounded-lg font-medium transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                "Generate Image"
+              )}
+            </button>
+               </div>
+            </div>
+            
+          </div>
+
+    
+        </form>
+
+        {/* Generated Image Display */}
+        {content && (
+          <div className="mt-12">
+            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#2a2a2a]">
               <img
                 src={content}
                 alt="Generated"
-                className="rounded-lg shadow-md max-h-[400px] object-contain"
+                className="w-full rounded-lg"
               />
-              <a
-                href={content}
-                download="generated-image.png"
-                className="flex items-center gap-2 text-sm text-green-600 hover:underline"
-              >
-                <Download className="w-4 h-4" />
-                Download Image
-              </a>
+              <div className="mt-4 flex justify-center">
+                <a
+                  href={content}
+                  download="generated-image.png"
+                  className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Image
+                </a>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!content && !loading && (
+          <div className="mt-12 bg-[#1a1a1a] rounded-lg p-12 border border-[#2a2a2a] flex flex-col items-center justify-center text-gray-500">
+            <Image className="w-16 h-16 mb-4" />
+            <p>Your generated image will appear here</p>
+          </div>
+        )}
       </div>
     </div>
   );

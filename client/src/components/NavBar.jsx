@@ -14,7 +14,7 @@ const Navbar = () => {
   const { openSignIn } = useClerk();
 
   return (
-    <div className="fixed z-5 w-full bg-[#171212]  backdrop-blur-2xl flex justify-between items-center py-3 px- sm:px-10 xl:px-5">
+    <div className="fixed z-5 w-full bg-[#171212] text-white backdrop-blur-2xl flex justify-between items-center py-3 px- sm:px-10 xl:px-5">
       <img
         src={assets.logo}
         alt="logo"
@@ -26,6 +26,9 @@ const Navbar = () => {
       <div className="flex items-center justify-between gap-4 ">
           <NavLink to={'/ai/community'}>
         Community
+       </NavLink>
+          <NavLink to={'/ai/write-article'}>
+        Tools
        </NavLink>
           <NavLink to={'/ai'}>
         Creations

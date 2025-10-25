@@ -10,7 +10,7 @@ import {
   SquarePen,
   Users,
 } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 
 const navItems = [
@@ -25,24 +25,23 @@ const navItems = [
 ];
 
 const Sidebar = ({ sidebar, setSidebar }) => {
-  const [isActive, setIsActive] = useState(false);
   const { user } = useUser();
-  console.log(user);
   const { signOut, openUserProfile } = useClerk();
 
   return (
     <div
-      className={`w-60 bg-[#171212] text-white  border-r border-neutral-800 flex 
+      className={`w-60 bg-[#171212] text-white border-r border-[#1a1a1a] flex 
         flex-col justify-between items-center max-sm:absolute top-14 
-        bottom-0 ${
+        bottom-0 z-40 ${
           sidebar ? "translate-x-0" : "max-sm:-translate-x-full"
         } transition-all duration-300 
         ease-in-out`}
     >
-      <div className="my-7 w-full">
-        
-        <h1 className="mt-2 ml-2 mb-2 text-xl items-center flex text-center">Tools</h1>
-        <div>
+      <div className="my-7 w-full px-3">
+        <h1 className="mt-2 mb-6 text-sm font-semibold text-gray-400 px-3">
+          TOOLS
+        </h1>
+        <div className="space-y-1">
           {navItems.map(({ to, label, Icon }) => (
             <NavLink
               key={to}
@@ -50,45 +49,44 @@ const Sidebar = ({ sidebar, setSidebar }) => {
               end={to === "/ai"}
               onClick={() => setSidebar(false)}
               className={({ isActive }) =>
-                `px-3.5 py-2.5 flex items-center gap-3 rounded ${
+                `px-4 py-3 flex items-center gap-3 rounded-lg transition-colors ${
                   isActive
-                    ? "bg-[#BA9E9E] text-white"
-                    : ""
+                    ? "bg-[#2a2424] text-white"
+                    : "text-gray-400 hover:text-white hover:bg-[#1a1414]"
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : ""}`} />
-                  {label}
+                  <Icon className="w-5 h-5" />
+                  <span className="text-sm">{label}</span>
                 </>
               )}
             </NavLink>
           ))}
         </div>
       </div>
-      <div className="w-full border-t border-gray-200 p-4 px-7 flex items-center justify-between">
+      
+      <div className="w-full border-t border-[#1a1a1a] p-4 px-5 flex items-center justify-between">
         <div
           onClick={openUserProfile}
-          className="flex gap-2 items-center cursor-pointer"
+          className="flex gap-3 items-center cursor-pointer hover:opacity-80 transition"
         >
-          <img src={user.imageUrl} className="w-8 rounded-full" alt="" />
+          <img src={user?.imageUrl} className="w-9 h-9 rounded-full" alt="" />
           <div>
-            <h1 className="font-small">{user.fullName}</h1>
-            <p>
-                <Protect plan='premium' fallback='Free'>
-                    Premium
-                </Protect>
+            <h1 className="font-medium text-sm">{user?.fullName}</h1>
+            <p className="text-xs text-gray-400">
+              <Protect plan="premium" fallback="Free">
+                Premium
+              </Protect>
             </p>
           </div>
         </div>
         <LogOut
           onClick={signOut}
-          className="w-4.5 text-gray-400 hover:text-gray-700 transition cursor-pointer"
+          className="w-5 h-5 text-gray-400 hover:text-white transition cursor-pointer"
         />
       </div>
-
-      
     </div>
   );
 };
