@@ -10,6 +10,23 @@ export const getUserCreations = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+export const getUserPlan =async(req,res)=>{
+  try {
+    const { userId } = req.auth();
+    const free_usage = req.free_usage;
+    const plan = req.plan;
+
+    console.log(free_usage,plan)
+    return res.json({success:true,
+      plan:plan,
+      credits:free_usage
+    })
+
+  } catch (error) {
+     res.json({ success: false, message: error.message });
+  }
+}
 export const getPublishedCreations = async (req, res) => {
   try {
     const { userId } = req.auth();

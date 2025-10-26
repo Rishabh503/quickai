@@ -2,6 +2,7 @@ import { FileText, Sparkles, Loader2, Upload, X, Download } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
+import Markdown from "react-markdown"
 import toast from "react-hot-toast";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -201,7 +202,9 @@ const ReviewResume = () => {
               <div className="p-6">
                 <div className="prose prose-invert max-w-none">
                   <div className="text-gray-300 whitespace-pre-line leading-relaxed">
+                   <Markdown>
                     {content}
+                    </Markdown> 
                   </div>
                 </div>
               </div>

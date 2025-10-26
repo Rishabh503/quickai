@@ -6,8 +6,10 @@ export const auth =async(req,res,next)=>{
         const hasPremiumPlan=await has({plan:"premium"})
         const user=await clerkClient.users.getUser(userId)
         if(!hasPremiumPlan && user.privateMetadata.free_usage) {
+            console.log("yaha se aya 1")
             req.free_usage=user.privateMetadata.free_usage
         }else{
+             console.log("yaha se aya 2")
             await clerkClient.users.updateUserMetadata(userId,{
                 privateMetadata:{
                     free_usage:0

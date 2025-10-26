@@ -1,10 +1,8 @@
 import { clerkClient } from "@clerk/express";
-import OpenAI from "openai";
-import { sql } from "../configs/db.js";
-import axios from "axios";
-import {v2 as cloudinary} from 'cloudinary'
-import fs from "fs"
 import { GoogleGenAI } from "@google/genai";
+import axios from "axios";
+import { v2 as cloudinary } from 'cloudinary';
+import { sql } from "../configs/db.js";
 // import pdf from "pdf-parse/lib/pdf-parse.js"
 // import * as pdfParse from "pdf-parse";
 // import * as pdf from "pdf-parse";
@@ -26,12 +24,14 @@ export const generateArticle = async (req, res) => {
     const plan = req.plan;
     const free_usage = req.free_usage;
     console.log("called")
-    if (plan !== "premium" && free_usage >= 10) {
-      return res.json({
-        success: false,
-        message: "limit has reached , upgrade  for more",
-      });
-    }
+
+    //lliife time freee
+    // if (plan !== "premium" && free_usage >= 10) {
+    //   return res.json({
+    //     success: false,
+    //     message: "limit has reached , upgrade  for more",
+    //   });
+    // }
     console.log("Body received:", req.body);
 
     console.log(prompt)
@@ -69,12 +69,15 @@ export const generateBlogTitle = async (req, res) => {
     const plan = req.plan;
     const free_usage = req.free_usage;
 console.log("clicked blog titles")
-    if (plan !== "premium" && free_usage >= 10) {
-      return res.json({
-        success: false,
-        message: "limit has reached , upgrade  for more",
-      });
-    }
+//life  time free
+
+
+    // if (plan !== "premium" && free_usage >= 10) {
+    //   return res.json({
+    //     success: false,
+    //     message: "limit has reached , upgrade  for more",
+    //   });
+    // }
 
     console.log(prompt)
 
@@ -108,15 +111,17 @@ export const generateImage = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { prompt, publish } = req.body;
+    
     const plan = req.plan;
       const free_usage = req.free_usage;
     console.log("clicked the generate image ")
-    // if (plan !== "premium") {
-    //   return res.json({
-    //     success: false,
-    //     message: "Subscribe to use this feature",
-    //   });
-    // }
+     if (plan !== "premium" && free_usage <=0) {
+      return res.json({
+        success: false,
+        message: "limit has reached , upgrade  for more",
+      });
+    }
+
 
     const formData = new FormData();
     formData.append("prompt", prompt);
@@ -136,7 +141,7 @@ export const generateImage = async (req, res) => {
  if (plan !== "premium") {
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: {
-          free_usage: free_usage + 1,
+          free_usage: free_usage - 1,
         },
       });
     }
@@ -154,11 +159,16 @@ export const removeImageBackground = async (req, res) => {
     // const { prompt, publish } = req.body;
     const image=req.file;
     const plan = req.plan;
+     const free_usage = req.free_usage;
     console.log(plan)
     console.log("clicked the remove image bkg2")
-    if (plan !== "premium") {
-      throw new Error("Subscribe to use premimum features")
+    if (plan !== "premium" && free_usage <=0) {
+      return res.json({
+        success: false,
+        message: "limit has reached , upgrade  for more",
+      });
     }
+
     console.log("Reacehd cloudinary")
     const {secure_url}=await cloudinary.uploader.upload(image.path,{
         transformation:[
@@ -178,9 +188,16 @@ export const removeImageBackground = async (req, res) => {
     await sql`
   INSERT INTO "creations" ("user_id", "prompt", "content", "type")
   VALUES (${userId}, 'remove the background', ${secure_url}, 'image')
+  
 `;
 
-   
+     if (plan !== "premium") {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {
+          free_usage: free_usage - 1,
+        },
+      });
+    }
 
     res.json({ success: true, content:secure_url });
   } catch (error) {
@@ -195,9 +212,13 @@ export const removeImageObject = async (req, res) => {
     const { object } = req.body;
     const {path}=req.file;
     const plan = req.plan;
+     const free_usage = req.free_usage;
 console.log("clicked on the remove image obj")
-     if (plan !== "premium") {
-      throw new Error("Subscribe to use premimum features")
+       if (plan !== "premium" && free_usage <=0) {
+      return res.json({
+        success: false,
+        message: "limit has reached , upgrade  for more",
+      });
     }
 
     const {public_id}=await cloudinary.uploader.upload(path)
@@ -213,7 +234,13 @@ console.log("clicked on the remove image obj")
 
     await sql`INSERT INTO creations(user_id,prompt,content,type)
     values (${userId},${`removed the ${object} from image`},${imageUrl},'image')`;
-   
+     if (plan !== "premium") {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {
+          free_usage: free_usage - 1,
+        },
+      });
+    }
 
     res.json({ success: true, content:imageUrl });
   } catch (error) {
@@ -223,18 +250,24 @@ console.log("clicked on the remove image obj")
 };
 export const resumeReview = async (req, res) => {
   try {
+    console.log("clickd resume review")
     const { userId } = req.auth();
     // const { object } = req.body;
     const resume = req.file;
+     const free_usage = req.free_usage;
     const plan = req.plan;
 
     if (!resume) {
       return res.json({ success: false, message: "Resume file is required" });
     }
 
-    if (plan !== "premium") {
-      throw new Error("subscribe to use this premium feature");
+    if (plan !== "premium" && free_usage <=0) {
+      return res.json({
+        success: false,
+        message: "limit has reached , upgrade  for more",
+      });
     }
+
 
     // 5mb se bada
     if (resume.size > 5 * 1024 * 1024) {
@@ -296,7 +329,16 @@ Optional: Suggest a few impactful ways to reword bullet points for clarity and e
 
     await sql`INSERT INTO creations(user_id,prompt,content,type)
       values (${userId}, 'review the uploaded resume', ${content}, 'review-resume')`;
+console.log("before",free_usage)
 
+  if (plan != "premium") {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {
+          free_usage: free_usage - 1,
+        },
+      });
+    }
+    console.log("after",free_usage)
     res.json({ success: true, content: content });
   } catch (error) {
     console.log(error.message);
