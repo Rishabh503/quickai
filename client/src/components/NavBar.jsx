@@ -68,7 +68,7 @@ const Navbar = () => {
 
        { plan==="free"?
        <p>
-         {credits} 🔥
+        Credits {credits} 🔥
        </p>
        :""}
        </p>
