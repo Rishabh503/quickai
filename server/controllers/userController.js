@@ -19,6 +19,9 @@ export const getPublishedCreations = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+
+
 export const toggleLikeCreation = async (req, res) => {
   try {
     const { userId } = req.auth;

@@ -97,6 +97,7 @@ const DashBoard = () => {
                     <th className="text-left p-4 font-semibold">Date</th>
                     <th className="text-left p-4 font-semibold">Tool</th>
                     <th className="text-left p-4 font-semibold">Description</th>
+                    <th className="text-left p-4 font-semibold">Published</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -106,14 +107,18 @@ const DashBoard = () => {
                       className="border-b border-[#2a2a2a] last:border-b-0"
                     >
                       <td className="p-4 text-gray-400">
-                        {formatDate(item.createdAt || item.date)}
+                        {formatDate(item.created_at) }
                       </td>
                       <td className="p-4 text-gray-300">
-                        {item.type || item.tool || 'AI Tool'}
+                        {item.type.toUpperCase() || item.tool || 'AI Tool'}
                       </td>
+                     
                       <td className="p-4 text-gray-400">
                         {item.prompt?.substring(0, 60) || item.description || 'Generated content'}
                         {(item.prompt?.length > 60 || item.description?.length > 60) && '...'}
+                      </td>
+                       <td className="p-4 text-center my-2 text-gray-300">
+                        {item.publish?"yes":"no"}
                       </td>
                     </tr>
                   ))}
