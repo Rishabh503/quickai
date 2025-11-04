@@ -1,35 +1,31 @@
-import React from 'react'
-import { AiToolsData } from '../assets/assets'
-import { useNavigate } from 'react-router-dom'
-import { useUser } from '@clerk/clerk-react'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+import { BentoDemo } from "./BentoDemo";
 
 export const AITools = () => {
-    const navigate = useNavigate()
-    const { user } = useUser()
+  const navigate = useNavigate();
+  const { user } = useUser();
 
-    return (
-        <div className='px-4 sm:px-20 xl:px-32 my-24'>
-            <div className='text-center'>
-                <h2 className='text-slate-700 text-[42px] font-semibold'>Powerful AI Tools</h2>
-                <p className='text-gray-500 max-w-lg mx-auto'>Everything you need to create, enhance, and optimize your content with cutting-edge AI technology.</p>
-            </div>
+  return (
+    <section className="relative py-24 px-6 sm:px-16 xl:px-32 bg-gradient-to-b from-black via-neutral-950 to-black text-white">
+      {/* Red subtle glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,0.15),transparent_60%)] pointer-events-none" />
 
-            <div className='flex flex-wrap mt-10 justify-center'>
-                {AiToolsData.map((tool, index) => (
-                    <div 
-                        key={index} 
-                        className='p-8 m-4 max-w-xs rounded-lg bg-[#FDFDFE] shadow-lg border border-gray-100 hover:-translate-y-1 transition-all duration-300 cursor-pointer' 
-                        onClick={() => user && navigate(tool.path)}
-                    >
-                        <tool.Icon 
-                            className='w-12 h-12 p-3 text-white rounded-xl' 
-                            style={{ background: `linear-gradient(to bottom, ${tool.bg.from}, ${tool.bg.to})` }} 
-                        />
-                        <h3 className='mt-6 mb-3 text-lg font-semibold'>{tool.title}</h3>
-                        <p className='text-gray-400 text-sm max-w-[95%]'>{tool.description}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
+      {/* Heading */}
+      <div className="relative text-center mb-16">
+        <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">
+          Explore Our AI Tools
+        </h2>
+        <p className="text-neutral-400 max-w-2xl mx-auto text-lg">
+          Unlock your creative potential with our intelligent AI-powered tools — from image generation to smart resume reviews.
+        </p>
+      </div>
+
+      {/* Bento section */}
+      <div className="relative z-10">
+        <BentoDemo />
+      </div>
+    </section>
+  );
+};

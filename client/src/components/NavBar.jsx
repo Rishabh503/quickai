@@ -79,7 +79,7 @@ const Navbar = () => {
        <>
        
        
-        <button onClick={openSignIn}   className="flex items-center gap-2 rounded-full text-sm cursor-pointer bg-primary text-white px-10 py-2.5">
+        <button onClick={openSignIn}   className="flex items-center gap-2 rounded-full text-sm cursor-pointer bg-[#ED1212] text-white px-10 py-2.5">
           Get started <ArrowRight className="w-4 h-4" />
         </button>
        </>

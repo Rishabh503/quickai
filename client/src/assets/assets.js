@@ -22,46 +22,52 @@ export const assets = {
 
 export const AiToolsData = [
     {
-        title: 'AI Article Writer',
+        name: 'AI Article Writer',
         description: 'Generate high-quality, engaging articles on any topic with our AI writing technology.',
         Icon: SquarePen,
         bg: { from: '#3588F2', to: '#0BB0D7' },
-        path: '/ai/write-article'
+        href: '/ai/write-article',
+        cta:"Learn More"
     },
     {
-        title: 'Blog Title Generator',
+        name: 'Blog Title Generator',
         description: 'Find the perfect, catchy title for your blog posts with our AI-powered generator.',
         Icon: Hash,
         bg: { from: '#B153EA', to: '#E549A3' },
-        path: '/ai/blog-titles'
+        href: '/ai/blog-titles',
+           cta:"Learn More"
     },
     {
-        title: 'AI Image Generation',
+        name: 'AI Image Generation',
         description: 'Create stunning visuals with our AI image generation tool, Experience the power of AI ',
         Icon: Image,
         bg: { from: '#20C363', to: '#11B97E' },
-        path: '/ai/generate-images'
+        href: '/ai/generate-images',
+           cta:"Learn More"
     },
     {
-        title: 'Background Removal',
+        name: 'Background Removal',
         description: 'Effortlessly remove backgrounds from your images with our AI-driven tool.',
         Icon: Eraser,
         bg: { from: '#F76C1C', to: '#F04A3C' },
-        path: '/ai/remove-background'
+        href: '/ai/remove-background',
+           cta:"Learn More"
     },
     {
-        title: 'Object Removal',
+        name: 'Object Removal',
         description: 'Remove unwanted objects from your images seamlessly with our AI object removal tool.',
         Icon: Scissors,
         bg: { from: '#5C6AF1', to: '#427DF5' },
-        path: '/ai/remove-object'
+        href: '/ai/remove-object',
+           cta:"Learn More"
     },
     {
-        title: 'Resume Reviewer',
+        name: 'Resume Reviewer',
         description: 'Get your resume reviewed by AI to improve your chances of landing your dream job.',
         Icon: FileText,
         bg: { from: '#12B7AC', to: '#08B6CE' },
-        path: '/ai/review-resume'
+        href: '/ai/review-resume',
+        cta:"Learn More"
     }
 ]
 

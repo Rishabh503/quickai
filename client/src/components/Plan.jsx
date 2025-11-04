@@ -1,18 +1,26 @@
-import React from 'react'
-import {PricingTable} from "@clerk/clerk-react"
+import React from "react";
+import { PricingTable } from "@clerk/clerk-react";
+
 const Plan = () => {
   return (
-    <div className='max-w-2xl mx-auto z-20 my-30'>
-      
-      <div className='text-center'>
-        <h2 className='text-slate-700 text-[42px] font-semibold'>Choose Your Plan</h2>
-        <p className='text-gray-500 max-w-lg mx-auto'>Start for free and scale up as you grow. Find the perfect plan for your content creation needs.</p>
+    <section className="max-w-5xl mx-auto py-20 px-6 relative z-20">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">
+          Pick Your Perfect Plan
+        </h2>
+        <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+          Start free and upgrade anytime. Whether you're experimenting or building
+          full-scale AI tools, there’s a plan that fits your journey.
+        </p>
       </div>
-    <div className='mt-14 mas-sm:mx-8'>
-        <PricingTable/>
-    </div>
-    </div>
-  )
-}
 
-export default Plan
+      <div className="mt-10 flex justify-center">
+        <div className="w-full max-w-4xl">
+          <PricingTable className="rounded-2xl shadow-lg bg-white/60 backdrop-blur-md border border-gray-200" />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Plan;

@@ -12,6 +12,8 @@ import ReviewResume from "./pages/ReviewResume";
 import Community from "./pages/Community";
 import { useAuth } from "@clerk/clerk-react";
 import {Toaster} from "react-hot-toast"
+import NewResume from "./pages/NewResume";
+
 const App = () => {
   const {getToken}=useAuth()
   useEffect(()=>{
@@ -31,6 +33,10 @@ const App = () => {
           <Route path="remove-object" element={<RemoveObject/>} />
           <Route path="review-resume" element={<ReviewResume/>} />
           <Route path="community" element={<Community/>} />
+
+
+
+          <Route path="review-resume-new" element={<NewResume/>} />
         </Route>
       </Routes>
     </div>

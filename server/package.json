@@ -19,13 +19,17 @@
     "axios": "^1.12.2",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
+    "diff-match-patch": "^1.0.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "fs": "^0.0.1-security",
     "google": "^2.1.0",
+    "html-pdf-node": "^1.0.8",
     "multer": "^2.0.2",
     "openai": "^5.23.1",
-    "pdf-parse": "^2.4.5"
+    "pdf-parse": "^2.4.5",
+    "quill": "^2.0.3",
+    "react-quill": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
