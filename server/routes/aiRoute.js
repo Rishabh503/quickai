@@ -3,6 +3,7 @@ import { generateArticle, generateBlogTitle, generateImage, removeImageBackgroun
 import { auth } from "../middlewares/auth.js";
 import { upload } from "../configs/multer.js";
 import { exportResumePDF, extractResumeText, getResumeHistory, resumeReviewNew, saveResumeVersion } from "../controllers/resumeController.js";
+import { youtubeAnalyze } from "../controllers/youtbeController.js";
 
 const aiRouter=express.Router()
 
@@ -12,6 +13,8 @@ aiRouter.post('/generate-image',auth,generateImage)
 aiRouter.post('/remove-image-background',upload.single('image'),auth,removeImageBackground)
 aiRouter.post('/remove-image-object',upload.single('image'),auth,removeImageObject)
 aiRouter.post('/resume-review',upload.single('resume'),auth,resumeReview)
+aiRouter.post('/youtube-analyze',auth,youtubeAnalyze)
+
 
 // resume review ones 
 

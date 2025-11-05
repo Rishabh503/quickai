@@ -13,6 +13,7 @@ import Community from "./pages/Community";
 import { useAuth } from "@clerk/clerk-react";
 import {Toaster} from "react-hot-toast"
 import NewResume from "./pages/NewResume";
+import YouTubeAnalyzer from "./pages/YoutubeAnalyze";
 
 const App = () => {
   const {getToken}=useAuth()
@@ -32,6 +33,7 @@ const App = () => {
           <Route path="remove-background" element={<RemoveBackground />} />
           <Route path="remove-object" element={<RemoveObject/>} />
           <Route path="review-resume" element={<ReviewResume/>} />
+          <Route path="youtube-analyze" element={<YouTubeAnalyzer/>} />
           <Route path="community" element={<Community/>} />
 
 
