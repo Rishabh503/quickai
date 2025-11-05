@@ -6,9 +6,12 @@ import {
   House,
   Image,
   LogOut,
+  NotebookTabs,
   Scissors,
   SquarePen,
   Users,
+  Youtube,
+  YoutubeIcon,
 } from "lucide-react";
 import React from "react";
 import { NavLink } from "react-router-dom";
@@ -22,6 +25,7 @@ const navItems = [
   { to: "/ai/remove-object", label: "Remove Object", Icon: Scissors },
   { to: "/ai/review-resume", label: "Review Resume", Icon: FileText },
   { to: "/ai/community", label: "Community", Icon: Users },
+  { to: "/ai/youtube-analyze", label: "Youtube Analyzer", Icon: NotebookTabs },
 ];
 
 const Sidebar = ({ sidebar, setSidebar }) => {

@@ -95,29 +95,27 @@ const fetchTranscript = async (videoId) => {
 
 const analyzeWithAI = async (transcript, videoInfo) => {
   //   const model = AI.models.generateContent({ model: "gemini-2.0-flash" });
+const prompt = `
+Analyze the YouTube video transcript and return a structured JSON summary with clear, non-repetitive insights.
 
-  const prompt = `
-Analyze the following YouTube video transcript and return valid JSON in this structure:
+Return JSON strictly in this format:
 {
-  "summary": "short summary",
-  "keyInsights": ["insight1","insight2","insight3"],
-  "detailedNotes": {
-    "introduction": "intro text",
-    "mainConcepts": [
-      {"topic":"concept1","content":"explanation"},
-      {"topic":"concept2","content":"explanation"}
-    ],
-    "practicalApplications": ["application1","application2"],
-    "conclusion": "final thoughts"
-  },
-  "actionItems": ["action1","action2"],
-  "studyTopics": ["topic1","topic2"]
+  "overview": "Brief idea of what the video covers and its purpose.",
+  "topicsCovered": ["Topic 1", "Topic 2", "Topic 3"],
+  "prerequisites": ["Concept or skill required before watching", "Another prereq if any"],
+  "explanations": [
+    {"topic": "Topic 1", "details": "Proper and easy-to-understand explanation."},
+    {"topic": "Topic 2", "details": "Proper and easy-to-understand explanation."}
+  ],
+  "shortNotes": "Concise revision notes summarizing key points and definitions.",
+  "usage": ["Real-world application 1", "Practical use 2"]
 }
 
 Video Title: ${videoInfo.title}
 Channel: ${videoInfo.channel}
 Transcript: ${transcript.slice(0, 8000)}
 `;
+
 
   const result = await AI.models.generateContent({
     model: "gemini-2.0-flash",

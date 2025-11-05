@@ -10,10 +10,10 @@ axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const YouTubeAnalyzer = () => {
   const { getToken } = useAuth();
   const [videoUrl, setVideoUrl] = useState("");
-  const [analysis, setAnalysis] = useState();
+  const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("summary");
 
-  // Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,7 +31,8 @@ const YouTubeAnalyzer = () => {
           headers: { Authorization: `Bearer ${await getToken()}` },
         }
       );
-      console.log("data:",data)
+
+      console.log("data:", data);
       if (data.success) {
         setAnalysis(data);
         toast.success("Analysis complete!");
@@ -46,16 +47,24 @@ const YouTubeAnalyzer = () => {
     }
   };
 
+  const tabs = [
+    { id: "summary", label: "Summary" },
+    { id: "properExplanation", label: "Explanation" },
+    { id: "detailedNotes", label: "Notes" },
+    { id: "actionItems", label: "Action Items" },
+    { id: "studyTopics", label: "Study Topics" },
+  ];
+
   return (
     <div className="h-full overflow-y-scroll p-6 items-start gap-4 text-slate-700">
-      {/* Left column - input */}
+      {/* Input Section */}
       <form
         onSubmit={handleSubmit}
         className="w-full p-4 text-white rounded-lg"
       >
         <div className="flex items-center gap-3">
-          <Youtube className="w-7 text-red-500" />
-          <h1 className="text-3xl font-semibold">YouTube Video Analyzer</h1>
+     
+          <h1 className="text-2xl font-semibold">YouTube Video Analyzer</h1>
         </div>
 
         <p className="mt-6 text-sm text-[#BA9E9E] font-medium">
@@ -76,7 +85,7 @@ const YouTubeAnalyzer = () => {
             className="flex items-center gap-2 bg-[#ED1212] text-white px-5 py-2 mt-6 text-sm rounded-lg cursor-pointer hover:bg-[#c70f0f] transition"
           >
             {!loading ? (
-              <Brain className="w-5" />
+       ""
             ) : (
               <LoaderCircle className="w-5 animate-spin" />
             )}
@@ -85,10 +94,10 @@ const YouTubeAnalyzer = () => {
         </div>
       </form>
 
-      {/* Right column - results */}
+      {/* Results Section */}
       <div className="w-full p-4 text-white rounded-lg flex flex-col">
-        <div className="flex items-center gap-3">
-          <Clock className="w-5 h-5 text-[#4A7AFF]" />
+        <div className="flex items-center gap-3 mb-4">
+       
           <h1 className="text-3xl font-semibold">Analysis Result</h1>
         </div>
 
@@ -100,9 +109,9 @@ const YouTubeAnalyzer = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-4 h-full overflow-y-scroll text-sm text-slate-600 space-y-6">
+          <div className="mt-4">
             {/* Video Info */}
-            <div className="flex items-center gap-3 bg-slate-100 p-3 rounded-lg">
+            <div className="flex items-center gap-3 bg-slate-100 p-3 rounded-lg mb-4">
               <img
                 src={analysis.videoInfo.thumbnail}
                 alt="thumb"
@@ -118,84 +127,88 @@ const YouTubeAnalyzer = () => {
               </div>
             </div>
 
-            {/* Summary */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#ED1212] mb-2">
-                Summary
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                {analysis.summary}
-              </p>
-            </div>
-
-            {/* Key Insights */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#ED1212] mb-2">
-                Key Insights
-              </h3>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                {analysis.keyInsights?.map((ins, i) => (
-                  <li key={i}>{ins}</li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Detailed Notes */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#ED1212] mb-2">
-                Detailed Notes
-              </h3>
-             <div className="prose text-gray-700">
-  <Markdown>{analysis.detailedNotes?.introduction}</Markdown>
-</div>
-              {analysis.detailedNotes?.mainConcepts?.map((item, i) => (
-                <div key={i} className="mt-3">
-                  <p className="font-semibold text-black">{item.topic}</p>
-                  <p className="text-gray-700">{item.content}</p>
-                </div>
+            {/* Slide Tabs */}
+            <div className="flex gap-3 mb-4 overflow-x-auto">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                    activeTab === tab.id
+                      ? "bg-[#ED1212] text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  {tab.label}
+                </button>
               ))}
-              <p className="mt-2 text-gray-700">
-                <strong>Conclusion:</strong>{" "}
-                {analysis.detailedNotes?.conclusion}
-              </p>
             </div>
 
-            {/* Action Items */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#ED1212] mb-2">
-                Action Items
-              </h3>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                {analysis.actionItems?.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
+            {/* Display Content Based on Selected Tab */}
+            <div className="bg-white p-4 rounded-lg text-gray-700 shadow-sm">
+              {activeTab === "summary" && (
+                <p className="leading-relaxed">{analysis.summary}</p>
+              )}
 
-            {/* Study Topics */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#ED1212] mb-2">
-                Study Topics
-              </h3>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                {analysis.studyTopics?.map((topic, i) => (
-                  <li key={i}>{topic}</li>
-                ))}
-              </ul>
-            </div>
+              {activeTab === "properExplanation" && (
+                <p className="leading-relaxed">
+                  {analysis.properExplanation || "No explanation found."}
+                </p>
+              )}
 
-            {/* Timestamps */}
-            <div>
-              <h3 className="text-xl font-semibold text-[#ED1212] mb-2">
-                Timestamps
-              </h3>
-              <ul className="list-inside space-y-1 text-gray-700">
-                {analysis.timestamps?.map((t, i) => (
-                  <li key={i}>
-                    {t.time} – {t.topic}
-                  </li>
-                ))}
-              </ul>
+              {activeTab === "detailedNotes" && (
+                <div>
+                  <h3 className="text-lg font-semibold text-[#ED1212] mb-2">
+                    Detailed Notes
+                  </h3>
+                  <p className="text-gray-700 mb-2">
+                    {analysis.detailedNotes?.introduction}
+                  </p>
+
+                  {analysis.detailedNotes?.mainConcepts?.map((item, i) => (
+                    <div key={i} className="mt-3">
+                      <p className="font-semibold text-black">{item.topic}</p>
+                      <p className="text-gray-700">{item.content}</p>
+                    </div>
+                  ))}
+
+                  {analysis.detailedNotes?.practicalApplications?.length > 0 && (
+                    <div className="mt-3">
+                      <p className="font-semibold text-black">
+                        Practical Applications:
+                      </p>
+                      <ul className="list-disc list-inside text-sm text-gray-700">
+                        {analysis.detailedNotes.practicalApplications.map(
+                          (app, i) => (
+                            <li key={i}>{app}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  <p className="mt-3 text-gray-700">
+                    <strong>Conclusion:</strong>{" "}
+                    {analysis.detailedNotes?.conclusion}
+                  </p>
+                </div>
+              )}
+
+              {activeTab === "actionItems" && (
+                <ul className="list-disc list-inside space-y-1 text-gray-700">
+                  {analysis.actionItems?.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              )}
+
+              {activeTab === "studyTopics" && (
+                <ul className="list-disc list-inside space-y-1 text-gray-700">
+                  {analysis.studyTopics?.map((topic, i) => (
+                    <li key={i}>{topic}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         )}
