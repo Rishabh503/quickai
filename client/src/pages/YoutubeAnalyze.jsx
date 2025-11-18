@@ -63,7 +63,6 @@ const YouTubeAnalyzer = () => {
         className="w-full p-4 text-white rounded-lg"
       >
         <div className="flex items-center gap-3">
-     
           <h1 className="text-2xl font-semibold">YouTube Video Analyzer</h1>
         </div>
 
@@ -84,11 +83,7 @@ const YouTubeAnalyzer = () => {
             disabled={loading}
             className="flex items-center gap-2 bg-[#ED1212] text-white px-5 py-2 mt-6 text-sm rounded-lg cursor-pointer hover:bg-[#c70f0f] transition"
           >
-            {!loading ? (
-       ""
-            ) : (
-              <LoaderCircle className="w-5 animate-spin" />
-            )}
+            {!loading ? "" : <LoaderCircle className="w-5 animate-spin" />}
             {!loading ? "Analyze Video" : "Analyzing..."}
           </button>
         </div>
@@ -97,7 +92,6 @@ const YouTubeAnalyzer = () => {
       {/* Results Section */}
       <div className="w-full p-4 text-white rounded-lg flex flex-col">
         <div className="flex items-center gap-3 mb-4">
-       
           <h1 className="text-3xl font-semibold">Analysis Result</h1>
         </div>
 
@@ -151,9 +145,7 @@ const YouTubeAnalyzer = () => {
               )}
 
               {activeTab === "properExplanation" && (
-                <p className="leading-relaxed">
-                  {analysis.properExplanation || "No explanation found."}
-                </p>
+                <p className="leading-relaxed">{analysis.properExplanation}</p>
               )}
 
               {activeTab === "detailedNotes" && (
@@ -161,36 +153,12 @@ const YouTubeAnalyzer = () => {
                   <h3 className="text-lg font-semibold text-[#ED1212] mb-2">
                     Detailed Notes
                   </h3>
-                  <p className="text-gray-700 mb-2">
-                    {analysis.detailedNotes?.introduction}
-                  </p>
-
-                  {analysis.detailedNotes?.mainConcepts?.map((item, i) => (
+                  {analysis.detailedNotes?.map((item, i) => (
                     <div key={i} className="mt-3">
                       <p className="font-semibold text-black">{item.topic}</p>
                       <p className="text-gray-700">{item.content}</p>
                     </div>
                   ))}
-
-                  {analysis.detailedNotes?.practicalApplications?.length > 0 && (
-                    <div className="mt-3">
-                      <p className="font-semibold text-black">
-                        Practical Applications:
-                      </p>
-                      <ul className="list-disc list-inside text-sm text-gray-700">
-                        {analysis.detailedNotes.practicalApplications.map(
-                          (app, i) => (
-                            <li key={i}>{app}</li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-
-                  <p className="mt-3 text-gray-700">
-                    <strong>Conclusion:</strong>{" "}
-                    {analysis.detailedNotes?.conclusion}
-                  </p>
                 </div>
               )}
 
@@ -206,6 +174,14 @@ const YouTubeAnalyzer = () => {
                 <ul className="list-disc list-inside space-y-1 text-gray-700">
                   {analysis.studyTopics?.map((topic, i) => (
                     <li key={i}>{topic}</li>
+                  ))}
+                </ul>
+              )}
+
+              {activeTab === "shortNotes" && (
+                <ul className="list-disc list-inside space-y-1 text-gray-700">
+                  {analysis.shortNotes?.map((note, i) => (
+                    <li key={i}>{note}</li>
                   ))}
                 </ul>
               )}
