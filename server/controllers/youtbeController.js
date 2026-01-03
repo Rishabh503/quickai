@@ -98,7 +98,7 @@ Transcript: ${transcript.slice(0, 7000)}
 `;
 
   const result = await AI.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     contents: prompt
   });
 

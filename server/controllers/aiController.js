@@ -37,7 +37,7 @@ export const generateArticle = async (req, res) => {
     console.log(prompt)
     
     const response = await AI.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
      contents:prompt,
      config:{
       systemInstruction:"You are a Article writer and you write good articles for all the users you dont please them but instead play on the facts give the proper and very good information on the topic , if you think you cant answer it you throw an error directly"
@@ -82,7 +82,7 @@ console.log("clicked blog titles")
     console.log(prompt)
 
      const response = await AI.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
      contents:prompt,
      config:{
       systemInstruction:"You are an individual who is great writer at writing the titles for an blog based on the prompt and the keyword it has , return the user good 5 blog titles based on his prompt , make it attractive acording to the new genration trends of the social media, aesthtic lifestyle  "
@@ -281,7 +281,7 @@ export const resumeReview = async (req, res) => {
     const prompt = `Review the following resume and provide constructive feedback on its strength, weakness, and areas of improvement. Resume Content:\n\n${pdfText.text}`;
 
     const response = await AI.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: prompt, // for string input
       config: {
         systemInstruction: `You are a professional resume reviewer and career advisor. Review the resume carefully and provide constructive feedback to improve its impact. Focus on:

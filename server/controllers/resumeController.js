@@ -159,7 +159,7 @@ export const resumeReviewNew = async (req, res) => {
     prompt += `Resume Content:\n\n${resumeText}`;
 
     const response = await AI.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         systemInstruction: `You are a professional resume reviewer. ${
