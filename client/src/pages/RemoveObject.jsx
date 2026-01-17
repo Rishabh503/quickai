@@ -78,6 +78,21 @@ const RemoveObject = () => {
     }
   };
 
+  const handleDownload = async () => {
+  const response = await fetch(content);
+  const blob = await response.blob();
+
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "object-removed.png";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+};
+
+
   return (
     <div className="h-full overflow-y-auto  text-white p-8">
       <div className=" mx-auto">
@@ -180,13 +195,13 @@ const RemoveObject = () => {
                   alt="processed"
                   className="w-full max-h-[500px] object-contain rounded-lg"
                 />
-                <a
-                  href={content}
-                  download="object-removed.png"
-                  className="mt-6 bg-[#3a3434] hover:bg-[#4a4444] text-white px-6 py-3 rounded-lg transition inline-block"
-                >
-                  Download Image
-                </a>
+               <button
+  onClick={handleDownload}
+  className="mt-6 bg-[#3a3434] hover:bg-[#4a4444] text-white px-6 py-3 rounded-lg transition"
+>
+  Download Image
+</button>
+
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center text-gray-500 py-20">
