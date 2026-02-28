@@ -63,7 +63,7 @@ const YouTubeAnalyzer = () => {
         className="w-full p-4 text-white rounded-lg"
       >
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold">YouTube Video Analyzer</h1>
+          <h1 className="text-3xl font-bold">YouTube Video Analyzer</h1>
         </div>
 
         <p className="mt-6 text-sm text-[#BA9E9E] font-medium">

@@ -56,9 +56,10 @@ const WriteArticle = () => {
         className="w-full text-white shadow-sm  p-5 rounded-xl"
         onSubmit={handleSubmit}
       >
+        
         <div className="flex items-center gap-3 mb-4">
           {/* <Sparkles className="w-6 text-[#4A7AFF]" /> */}
-          <h1 className="text-2xl font-semibold text-white">
+          <h1 className="text-3xl font-bold text-white">
             Article Generator
           </h1>
         </div>

@@ -3,20 +3,25 @@ import { PricingTable } from "@clerk/clerk-react";
 
 const Plan = () => {
   return (
-    <section className="max-w-5xl mx-auto py-20 px-6 relative z-20">
-      <div className="text-center mb-16">
-        <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">
-          Pick Your Perfect Plan
+    <section className="relative py-32 px-6 sm:px-10 xl:px-32 bg-white overflow-hidden">
+      {/* Subtle background patterns */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
+      
+      <div className="relative z-10 text-center mb-16">
+        <h2 className="text-4xl sm:text-6xl font-black text-neutral-900 mb-6 tracking-tight">
+          Simple, <span className="text-red-500">Transparent</span> Pricing
         </h2>
-        <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-          Start free and upgrade anytime. Whether you're experimenting or building
-          full-scale AI tools, there’s a plan that fits your journey.
+        <p className="text-neutral-500 text-lg sm:text-xl max-w-2xl mx-auto font-medium">
+          Choose the perfect plan for your creative journey. Start for free 
+          and scale as you grow with our flexible options.
         </p>
       </div>
 
-      <div className="mt-10 flex justify-center">
-        <div className="w-full max-w-4xl">
-          <PricingTable className="rounded-2xl shadow-lg bg-white/60 backdrop-blur-md border border-gray-200" />
+      <div className="relative z-10 mt-12 flex justify-center">
+        <div className="w-full max-w-5xl">
+          <div className="p-1 rounded-[2.5rem] bg-gradient-to-b from-neutral-100 to-white shadow-2xl border border-neutral-200/50">
+            <PricingTable className="rounded-[2.25rem] overflow-hidden" />
+          </div>
         </div>
       </div>
     </section>

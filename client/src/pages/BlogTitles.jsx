@@ -56,7 +56,7 @@ const BlogTitles = () => {
       >
         <div className="flex items-center gap-3">
           {/* <Sparkles className="w-6 text-[#8E37EB]" /> */}
-          <h1 className="text-3xl font-semibold">Blog Title Generator</h1>
+         <h1 className="text-3xl font-bold ">Blog Title </h1>
         </div>
         <p className="mt-6 text-sm text-[#BA9E9E] font-medium">Keyword</p>
         <input
