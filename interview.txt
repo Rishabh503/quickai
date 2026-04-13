@@ -1,0 +1,15 @@
+What is a REST API 
+
+Difference between Monolithic vs Microservices architecture
+
+Authentication vs Authorization
+
+SQL vs NoSQL databases — when and why to use each
+
+How you handle:
+
+Error handling
+
+Logging
+
+API security

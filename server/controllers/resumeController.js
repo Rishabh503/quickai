@@ -26,14 +26,14 @@ export const extractResumeText = async (req, res) => {
     console.log('Extracting text from:', file.path);
     console.log('File size:', file.size);
 
-    // Use the same PDFParse method as your working route
+  
     const parser = new PDFParse({ url: file.path });
     const pdfText = await parser.getText();
     
     console.log('PDF Text extracted, length:', pdfText.text.length);
 
     if (!pdfText.text || pdfText.text.trim().length === 0) {
-      // Clean up file
+
       if (fs.existsSync(file.path)) {
         fs.unlinkSync(file.path);
       }
@@ -44,10 +44,9 @@ export const extractResumeText = async (req, res) => {
       });
     }
 
-    // Convert plain text to HTML with formatting
+  
     const htmlContent = convertTextToHTML(pdfText.text);
 
-    // Clean up uploaded file
     if (fs.existsSync(file.path)) {
       fs.unlinkSync(file.path);
     }
@@ -61,7 +60,7 @@ export const extractResumeText = async (req, res) => {
   } catch (error) {
     console.error('Extract text error:', error);
     
-    // Clean up file on error
+ 
     if (req.file?.path && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
@@ -159,7 +158,7 @@ export const resumeReviewNew = async (req, res) => {
     prompt += `Resume Content:\n\n${resumeText}`;
 
     const response = await AI.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         systemInstruction: `You are a professional resume reviewer. ${

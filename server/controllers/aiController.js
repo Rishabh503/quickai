@@ -37,7 +37,7 @@ export const generateArticle = async (req, res) => {
     console.log(prompt)
     
     const response = await AI.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
      contents:prompt,
      config:{
       systemInstruction:"You are a Article writer and you write good articles for all the users you dont please them but instead play on the facts give the proper and very good information on the topic , if you think you cant answer it you throw an error directly"
@@ -82,7 +82,7 @@ console.log("clicked blog titles")
     console.log(prompt)
 
      const response = await AI.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
      contents:prompt,
      config:{
       systemInstruction:"You are an individual who is great writer at writing the titles for an blog based on the prompt and the keyword it has , return the user good 5 blog titles based on his prompt , make it attractive acording to the new genration trends of the social media, aesthtic lifestyle  "
@@ -125,6 +125,7 @@ export const generateImage = async (req, res) => {
 
     const formData = new FormData();
     formData.append("prompt", prompt);
+    
     const {data}=await axios.post('https://clipdrop-api.co/text-to-image/v1',formData,{
         headers:{'x-api-key':process.env.CLIPDROP_API_KEY},
         responseType:"arraybuffer"
